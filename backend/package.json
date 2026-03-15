@@ -1,0 +1,14 @@
+{
+  "name": "reactguard-backend",
+  "version": "1.0.0",
+  "description": "ReactGuard Demo API — auto-signs attack/reset transactions",
+  "type": "module",
+  "scripts": {
+    "demo": "node --env-file=../.env demo-server.js"
+  },
+  "dependencies": {
+    "ethers": "^6.16.0",
+    "express": "^4.21.0"
+  }
+}
+
