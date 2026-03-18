@@ -35,7 +35,7 @@ const provider = new ethers.JsonRpcProvider(RPC_URL)
 const wallet   = new ethers.Wallet(process.env.PRIVATE_KEY, provider)
 
 const ORACLE_ADDR = process.env.ORACLE_ADDRESS
-const GUARD_ADDR  = process.env.STASIS_ADDRESS
+const GUARD_ADDR  = process.env.STASIS_ADDRESS || process.env.GUARD_ADDRESS || process.env.REACTGUARD_ADDRESS
 const POOL_ADDR   = process.env.POOL_ADDRESS
 
 if (!ORACLE_ADDR || !GUARD_ADDR || !POOL_ADDR) {
@@ -182,7 +182,7 @@ app.post('/demo/reset', async (_req, res) => {
   }
 })
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT || process.env.DEMO_PORT || 3001
 app.listen(PORT, () => {
   console.log(`\n🚀 Stasis Demo API → http://localhost:${PORT}`)
   console.log(`   Wallet:  ${wallet.address}`)
