@@ -6,62 +6,58 @@ This guide explains how to verify that **Stasis** is performing autonomous, on-c
 
 ## 📍 Contract Addresses (Somnia Devnet)
 
-| Contract | Address |
-| :--- | :--- |
-| **Oracle** | `0xE5b2AD1558949447eD7b135ceB40baA894f417A1` |
-| **Stasis** | `0x95Cc0Edf7DA5EC63471CD8C57bA5899423CC2CEA` |
-| **Lending Pool** | `0xA8DC52496d077E823675F114f2D8469C7a6E97d8` |
+| Contract | Address | Explorer |
+| :--- | :--- | :---: |
+| **Oracle** | `0x3B24D72964eB7D148dB1c77BA5E8E05A3e4a71Df` | [View ↗](https://shannon-explorer.somnia.network/address/0x3B24D72964eB7D148dB1c77BA5E8E05A3e4a71Df) |
+| **Stasis** | `0x95Cc0Edf7DA5EC63471CD8C57bA5899423CC2CEA` | [View ↗](https://shannon-explorer.somnia.network/address/0x95Cc0Edf7DA5EC63471CD8C57bA5899423CC2CEA) |
+| **Lending Pool** | `0x027E3FA613Db4d06B65555215fC35A7dDEAe6BDA` | [View ↗](https://shannon-explorer.somnia.network/address/0x027E3FA613Db4d06B65555215fC35A7dDEAe6BDA) |
 
 ---
 
 ## 🔍 How to Verify "True Reactivity"
 
 ### 1. The On-Chain Alarms (Subscriptions)
-Your Stasis is registered with the Somnia Precompile (`0x0100`).
+Stasis is registered with the Somnia Precompile (`0x0100`).
 - **Subscription ID:** `6879957816108517943170610238244214937208003125`
 
-# Stasis Verification Guide
-How to verify the autonomous on-chain defense.
+### 2. The Smoking Gun: Internal Transactions
+1. Go to the [Stasis Explorer Page](https://shannon-explorer.somnia.network/address/0x95Cc0Edf7DA5EC63471CD8C57bA5899423CC2CEA).
+2. Click the **"Internal Txns"** tab.
+3. You will see successful calls where the **From** address is **`0x000...0100`** (the Somnia Reactor).
+- This proves the blockchain itself defended your protocol without any middleman or off-chain bot.
 
-## Automated Verification
-Run the simulation script to prove the defense:
-```bash
-npm run demo:attack
-```
-
-## Manual Verification (Somnia Explorer)
-1. Go to the [Somnia Explorer](https://shannon-explorer.somnia.network/address/0x95Cc0Edf7DA5EC63471CD8C57bA5899423CC2CEA).
-2. Look for `onEvent` calls triggered by the precompile `0x0100`.
-3. Verify that the `ProtocolPaused` event was emitted by Stasis.
-dress is **`0x000...0100`** (this is the Somnia Reactor).
-- This is the "smoking gun" that proves the blockchain itself defended your protocol without any middleman.
-
-### 3. Understanding "Failed" Transactions
-If you see transactions on your address that show **"Failed"** while calling `onEvent`:
+### 3. Understanding Security Failures
+If you see failed transactions when calling `onEvent` manually:
 - **This is a Security Feature.**
-- `Stasis` only allows the Somnia Network (`0x0100`) to trigger the defense.
-- If you or a hacker tries to call it manually, the contract correctly **Rejects** the call.
-- **Failures for you = Security for the users.**
+- Stasis only allows the Somnia Network (`0x0100`) to trigger the defense.
+- Manual attempts are rejected by Solidity, ensuring the system can only be triggered by the validator network.
 
 ---
 
 ## 🛠️ Tools for Verification
 
-### On-Chain Status Script
-Run this command in your terminal to see the live state of all contracts directly from the blockchain:
+### Automated Verification Script
+Run the simulation script to prove the defense end-to-end:
+```bash
+# In the root directory
+npx hardhat run scripts/simulate-attack.js --network somnia
+```
+
+### On-Chain Status Reader
+Run this command to see the live state of all contracts:
 ```bash
 npx hardhat run scripts/check-status.js --network somnia
 ```
 
 ### Dashboard Live Feed
 1. Open [http://localhost:5173](http://localhost:5173).
-2. The **Event Stream** now shows full **Transaction Hashes**.
+2. The **Event Stream** shows full **Transaction Hashes**.
 3. Use the **Clipboard (📋)** icon to copy a hash and paste it into the explorer for instant proof.
 
 ---
 
 ## 🚀 Final Checklist for Judges
-- [x] **Subscription Active:** Visible on Dashboard + synced on-chain.
-- [x] **Autonomous Defense:** Proven via "Internal Transactions" from `0x0100`.
-- [x] **Zero-Click Demo:** Backend auto-signs for a seamless demo experience.
-- [x] **Hack-Proof:** Manual attempts to trigger defense are blocked by Solidity.
+- [x] **Subscription Active**: Visible on Dashboard and verifiable on-chain.
+- [x] **Autonomous Defense**: Proven via "Internal Transactions" from `0x0100`.
+- [x] **Zero-Click Demo**: Seamless experience without wallet popups.
+- [x] **Solidity Secured**: Defense logic protected from unauthorized manual calls.

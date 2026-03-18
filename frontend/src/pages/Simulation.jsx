@@ -34,7 +34,7 @@ const RPC_URL = import.meta.env.VITE_RPC_URL || 'https://dream-rpc.somnia.networ
 const ORACLE_ADDR = import.meta.env.VITE_ORACLE_ADDRESS || ''
 const GUARD_ADDR  = import.meta.env.VITE_STASIS_ADDRESS || ''
 const POOL_ADDR   = import.meta.env.VITE_POOL_ADDRESS || ''
-const API_BASE    = import.meta.env.VITE_BACKEND_URL || ''
+const API_BASE    = import.meta.env.VITE_API_URL || 'http://localhost:3001'
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 function fmtPrice(bigN) {

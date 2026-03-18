@@ -17,15 +17,17 @@ import 'dotenv/config'
 import express from 'express'
 import { ethers } from 'ethers'
 
+import cors from 'cors'
 const app = express()
+app.use(cors({
+  origin: [
+    'http://localhost:5173',                  // local dev
+    'https://stasis.vercel.app',              // your Vercel URL
+    'https://stasis-backend.onrender.com',    // backend self (optional but safe)
+    /\.vercel\.app$/                          // all Vercel preview URLs
+  ]
+}))
 app.use(express.json())
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin',  '*')
-  res.header('Access-Control-Allow-Methods', 'GET,POST,OPTIONS')
-  res.header('Access-Control-Allow-Headers', 'Content-Type')
-  if (req.method === 'OPTIONS') return res.sendStatus(200)
-  next()
-})
 
 // ── Chain connection (auto-signs from .env PRIVATE_KEY) ───────────────────
 const RPC_URL = process.env.SOMNIA_RPC_URL || 'https://dream-rpc.somnia.network'
@@ -81,8 +83,8 @@ app.get('/demo/status', async (_req, res) => {
 
 // ── POST /demo/attack ─────────────────────────────────────────────────────
 // Sends ONE tx: oracle.setPrice(-20%)
-// Somnia validators auto-invoke ReactGuard._onEvent() — we just poll for it
-// FALLBACK: If validators don't respond in 5s, manually trigger ReactGuard
+// Somnia validators auto-invoke Stasis._onEvent() — we just poll for it
+// FALLBACK: If validators don't respond in 5s, manually trigger Stasis
 app.post('/demo/attack', async (_req, res) => {
   try {
     const oracle = new ethers.Contract(ORACLE_ADDR, ORACLE_ABI, wallet)

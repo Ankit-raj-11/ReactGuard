@@ -75,13 +75,15 @@ export default function Docs() {
             </div>
           </div>
 
-          <div className="card" style={{ marginTop: '60px', background: 'var(--bg-secondary)', border: '1px solid var(--border)', padding: '40px' }}>
+          <div className="card" style={{ marginTop: '60px', background: 'var(--bg-card)', border: '1px solid var(--border)', padding: '40px' }}>
             <h3 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '12px' }}>Detailed Technical Breakdown Coming Soon</h3>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '15px' }}>
-              <p className="docs-subtitle">Stasis architecture, native reactivity, and integration guide.</p>
+            <div style={{ color: 'var(--text-secondary)', fontSize: '15px', lineHeight: '1.6' }}>
+              <div className="docs-subtitle" style={{ color: 'var(--blue)', fontWeight: '600', marginBottom: '16px' }}>
+                Stasis architecture, native reactivity, and integration guide.
+              </div>
               We are currently finalizing the comprehensive documentation, integration guides, and API references. 
               In the meantime, explore our <a href="https://github.com/Ankit-raj-11/Stasis" target="_blank" rel="noreferrer" className="nav-link" style={{ display: 'inline', color: 'var(--blue)' }}>GitHub repository</a> for the source code and implementation details.
-            </p>
+            </div>
           </div>
         </div>
       </main>

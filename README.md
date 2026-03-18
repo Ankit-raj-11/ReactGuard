@@ -335,7 +335,7 @@ Stasis/
 | **🏆 Technical Excellence** | 19 passing tests. Official `SomniaEventHandler` implementation. Subscription ID synced on-chain. |
 | **⚡ Real-Time UX** | ethers.js live listeners. Sub-second dashboard updates. Full TX hashes with click-to-copy. |
 | **🔗 Somnia Integration** | 3 contracts live on Somnia Devnet. Subscription registered with official `0x0100` precompile. |
-| **🌍 Potential Impact** | Any Aave/Compound fork can be protected by deploying ReactGuard as the protocol guardian. |
+| **🌍 Potential Impact** | Any Aave/Compound fork can be protected by deploying Stasis as the protocol guardian. |
 
 ---
 
