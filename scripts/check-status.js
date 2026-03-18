@@ -2,22 +2,22 @@
  * check-status.js
  * 
  * Directly queries the Somnia Testnet to verify the current state 
- * of all ReactGuard components.
+ * of all Stasis components.
  */
 const { ethers } = require("hardhat");
 
 async function main() {
   const oracleAddress = process.env.ORACLE_ADDRESS;
-  const reactGuardAddress = process.env.REACTGUARD_ADDRESS;
+  const stasisAddress = process.env.STASIS_ADDRESS;
   const poolAddress = process.env.POOL_ADDRESS;
 
   console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-  console.log("🔍 ReactGuard — On-Chain Status Check");
+  console.log("🔍 Stasis — On-Chain Status Check");
   console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
 
   const [oracle, guard, pool] = await Promise.all([
     ethers.getContractAt("MockOracle", oracleAddress),
-    ethers.getContractAt("ReactGuard", reactGuardAddress),
+    ethers.getContractAt("Stasis", stasisAddress),
     ethers.getContractAt("MockLendingPool", poolAddress)
   ]);
 
@@ -28,7 +28,7 @@ async function main() {
   ]);
 
   console.log(`📈 MockOracle Price:    $${ethers.formatEther(price)}`);
-  console.log(`🛡️ ReactGuard Status:`);
+  console.log(`🛡️ Stasis Status:`);
   console.log(`   - Pool Paused:       ${status.poolPaused}`);
   console.log(`   - Interventions:     ${status.interventions}`);
   console.log(`   - Last Drop:         ${Number(status.lastDrop) / 100}%`);

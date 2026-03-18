@@ -16,7 +16,7 @@ export default function Docs() {
             <Shield size={20} strokeWidth={2} color="#fff" />
           </div>
           <div className="logo-text">
-            <h1>ReactGuard</h1>
+            <h1 style={{ color: '#fff' }}>Stasis</h1>
           </div>
         </Link>
         
@@ -35,7 +35,7 @@ export default function Docs() {
           <h1 style={{ fontSize: '56px', fontWeight: '800', marginBottom: '24px', letterSpacing: '-0.03em' }}>Documentation</h1>
           
           <p style={{ fontSize: '18px', color: 'var(--text-secondary)', maxWidth: '600px', margin: '0 auto 60px', lineHeight: '1.6' }}>
-            Learn how ReactGuard leverages Somnia's Native Reactivity to secure the next generation of DeFi protocols.
+            Learn how Stasis leverages Somnia's Native Reactivity to secure the next generation of DeFi protocols.
           </p>
 
           {/* ── Video/Showcase Placeholder ── */}
@@ -78,8 +78,9 @@ export default function Docs() {
           <div className="card" style={{ marginTop: '60px', background: 'var(--bg-secondary)', border: '1px solid var(--border)', padding: '40px' }}>
             <h3 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '12px' }}>Detailed Technical Breakdown Coming Soon</h3>
             <p style={{ color: 'var(--text-secondary)', fontSize: '15px' }}>
+              <p className="docs-subtitle">Stasis architecture, native reactivity, and integration guide.</p>
               We are currently finalizing the comprehensive documentation, integration guides, and API references. 
-              In the meantime, explore our <a href="https://github.com/Ankit-raj-11/ReactGuard" target="_blank" rel="noreferrer" className="nav-link" style={{ display: 'inline', color: 'var(--blue)' }}>GitHub repository</a> for the source code and implementation details.
+              In the meantime, explore our <a href="https://github.com/Ankit-raj-11/Stasis" target="_blank" rel="noreferrer" className="nav-link" style={{ display: 'inline', color: 'var(--blue)' }}>GitHub repository</a> for the source code and implementation details.
             </p>
           </div>
         </div>
@@ -90,8 +91,8 @@ export default function Docs() {
         <div className="section-container" style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr 1fr', gap: '48px', textAlign: 'left' }}>
           <Link to="/" className="footer-brand" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} style={{ cursor: 'pointer', textDecoration: 'none' }}>
             <div className="logo" style={{ marginBottom: '20px' }}>
-              <div className="logo-icon"><Shield size={20} color="#fff" /></div>
-              <div className="logo-text"><h1 style={{ color: '#fff', fontSize: '20px', fontWeight: '800' }}>ReactGuard</h1></div>
+              <div className="logo-icon"><Shield size={20} strokeWidth={2} color="#fff" /></div>
+              <div className="logo-text"><h1 style={{ color: '#fff', fontSize: '20px', fontWeight: '800' }}>Stasis</h1></div>
             </div>
             <p style={{ color: 'var(--text-secondary)', fontSize: '14px', lineHeight: '1.6', maxWidth: '240px' }}>
               The first DeFi guardian that defends protocols entirely on-chain, with sub-second finality.
@@ -103,7 +104,7 @@ export default function Docs() {
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '12px' }}>
               <li><Link to="/" className="nav-link" style={{ fontSize: '14px' }}>Home</Link></li>
               <li><Link to="/simulation" className="nav-link" style={{ fontSize: '14px' }}>Simulation</Link></li>
-              <li><a href="https://github.com/Ankit-raj-11/ReactGuard" target="_blank" rel="noreferrer" className="nav-link" style={{ fontSize: '14px' }}>GitHub</a></li>
+              <li><a href="https://github.com/Ankit-raj-11/Stasis" target="_blank" rel="noreferrer" className="nav-link" style={{ fontSize: '14px' }}>GitHub</a></li>
             </ul>
           </div>
 
@@ -121,7 +122,7 @@ export default function Docs() {
         </div>
 
         <div className="section-container" style={{ marginTop: '60px', paddingTop: '30px', borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'var(--text-muted)', fontSize: '12px' }}>
-          <p>© 2025 ReactGuard. All rights reserved.</p>
+          <p>© 2026 Stasis. All rights reserved.</p>
           <p>Built with <b>Somnia Native Reactivity</b></p>
         </div>
       </footer>

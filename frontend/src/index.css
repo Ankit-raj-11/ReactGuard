@@ -576,6 +576,11 @@ body::before {
 }
 
 /* ── Address display ── */
+.addr-link {
+  text-decoration: none;
+  display: block;
+}
+
 .addr {
   font-family: var(--mono);
   font-size: 10px;
@@ -586,7 +591,14 @@ body::before {
   border-radius: 6px;
   border: 1px solid var(--border);
   margin-top: 8px;
-  cursor: text;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.addr-link:hover .addr {
+  border-color: var(--blue);
+  color: var(--text-primary);
+  background: var(--bg-card-hover);
 }
 
 /* ── Latency ── */

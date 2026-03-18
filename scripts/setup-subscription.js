@@ -5,9 +5,9 @@
  * DIRECTLY from the EOA wallet (not through a smart contract).
  *
  * The subscription links:
- *   MockOracle.PriceDrop  →  ReactGuard.onEvent()
+ *   MockOracle.PriceDrop  →  Stasis.onEvent()
  *
- * After this runs, every oracle price drop ≥ 5% will trigger ReactGuard
+ * After this runs, every oracle price drop ≥ 5% will trigger Stasis.
  * automatically via Somnia validator network — no manual trigger needed.
  */
 const { ethers } = require("hardhat");
@@ -25,14 +25,14 @@ async function main() {
   const [owner] = await ethers.getSigners();
 
   const oracleAddress    = process.env.ORACLE_ADDRESS;
-  const reactGuardAddress = process.env.REACTGUARD_ADDRESS;
+  const stasisAddress = process.env.STASIS_ADDRESS;
 
-  if (!oracleAddress || !reactGuardAddress) {
-    throw new Error("Missing ORACLE_ADDRESS or REACTGUARD_ADDRESS in .env.");
+  if (!oracleAddress || !stasisAddress) {
+    throw new Error("Missing ORACLE_ADDRESS or STASIS_ADDRESS in .env.");
   }
 
   console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-  console.log("⚡  ReactGuard — Setting Up Somnia Reactivity Subscription");
+  console.log("⚡  Stasis — Setting Up Somnia Reactivity Subscription");
   console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
 
   // ── 1. Balance check ───────────────────────────────────────────────────────
@@ -73,7 +73,7 @@ async function main() {
     origin:                  ethers.ZeroAddress, // any tx.origin
     caller:                  ethers.ZeroAddress, // any msg.sender
     emitter:                 oracleAddress,        // only MockOracle events
-    handlerContractAddress:  reactGuardAddress,    // ReactGuard handles it
+    handlerContractAddress:  stasisAddress,    // Stasis handles it
     handlerFunctionSelector: onEventSelector,       // onEvent() public handler
     priorityFeePerGas:       1_000_000_000n,       // 1 gwei in nanoSTT
     maxFeePerGas:            100_000_000_000n,      // 100 gwei
@@ -84,7 +84,7 @@ async function main() {
 
   console.log("📡 Creating subscription via Precompile (0x0100)...");
   console.log(`   Oracle (emitter):  ${oracleAddress}`);
-  console.log(`   Handler contract:  ${reactGuardAddress}`);
+  console.log(`   Handler contract:  ${stasisAddress}`);
   console.log(`   Handler function:  onEvent() [${onEventSelector}]`);
   console.log(`   Event filter:      PriceDrop (${PRICE_DROP_TOPIC.slice(0,10)}...)\n`);
 
@@ -110,9 +110,9 @@ async function main() {
   if (subId !== null) {
     console.log(`✅ Subscription ID: ${subId.toString()}`);
     
-    console.log("\n🔄 Syncing Subscription ID to ReactGuard contract...");
-    const reactGuard = await ethers.getContractAt("ReactGuard", reactGuardAddress);
-    const syncTx = await reactGuard.setSubscriptionId(subId);
+    console.log("\n🔄 Syncing Subscription ID to Stasis contract...");
+    const stasis = await ethers.getContractAt("Stasis", stasisAddress);
+    const syncTx = await stasis.setSubscriptionId(subId);
     await syncTx.wait();
     console.log("   ✅ Synced!");
   } else {
@@ -125,7 +125,7 @@ async function main() {
   console.log("\nFrom now on, the flow is 100% automatic:");
   console.log("  1. oracle.setPrice(−20%)  →  PriceDrop emitted on-chain");
   console.log("  2. Somnia validators detect PriceDrop subscription match");
-  console.log("  3. Validators invoke ReactGuard.onEvent() IN THE SAME BLOCK");
+  console.log("  3. Validators invoke Stasis.onEvent() IN THE SAME BLOCK");
   console.log("  4. _onEvent() risk engine runs → pool.pause() if ≥20% drop");
   console.log("\n  ⚡ ZERO off-chain bots. ZERO manual triggers. Pure Somnia Reactivity.");
   console.log("\nRun the attack demo:");

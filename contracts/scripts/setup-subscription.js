@@ -1,7 +1,7 @@
 /**
  * setup-subscription.js
  * Registers a Somnia Reactivity on-chain subscription so validators
- * invoke ReactGuard._onEvent() whenever MockOracle emits PriceDrop.
+ * invoke Stasis._onEvent() whenever MockOracle emits PriceDrop.
  *
  * Requirements:
  *   - All contracts deployed (run deploy.js first)
@@ -70,13 +70,13 @@ async function main() {
 
   console.log("\n📡 Creating Somnia Reactivity on-chain subscription...");
   console.log("   Emitter (Oracle):  ", addresses.oracle);
-  console.log("   Handler (ReactGuard):", addresses.guardian);
+  console.log("   Handler (Stasis):", addresses.guardian);
   console.log("   Topic (PriceDrop): ", PRICE_DROP_TOPIC);
 
-  // On-chain subscription: validators invoke ReactGuard._onEvent on PriceDrop
+  // On-chain subscription: validators invoke Stasis._onEvent on PriceDrop
   const subscription = await sdk.createOnChainSubscription({
     emitter:      addresses.oracle,           // watch MockOracle
-    handlerAddress: addresses.guardian,       // call ReactGuard._onEvent
+    handlerAddress: addresses.guardian,       // call Stasis._onEvent
     topics:       [PRICE_DROP_TOPIC],         // filter: PriceDrop events only
     isGuaranteed: true,                       // eventual delivery guaranteed
     isCoalesced:  false,                      // fire immediately, don't batch
@@ -90,7 +90,7 @@ async function main() {
   console.log("\n✅ On-chain Reactivity subscription created!");
   console.log("   Subscription ID:", subscription.id ?? "(see tx)");
   console.log(
-    "\n🛡️  ReactGuard is now ACTIVE. Any PriceDrop ≥500 bps on MockOracle"
+    "\n🛡️  Stasis is now ACTIVE. Any PriceDrop ≥500 bps on MockOracle"
   );
   console.log("   will trigger on-chain risk scoring and defense automatically.");
   console.log("\nNext: cd .. && npm run dev (backend), then simulate an attack.");

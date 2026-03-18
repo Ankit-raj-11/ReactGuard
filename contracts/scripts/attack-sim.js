@@ -4,13 +4,13 @@
  *
  * PROOF OF ON-CHAIN DEFENSE:
  * This script only sends 2 transactions (setPrice + borrow).
- * The pool pause is triggered by ReactGuard._onEvent() via Somnia validators —
+ * The pool pause is triggered by Stasis._onEvent() via Somnia validators —
  * NOT by this script or the Node.js backend.
  *
  * Expected outcome:
  *   1. oracle.setPrice(−20%) fires PriceDrop event
- *   2. Somnia validators invoke ReactGuard._onEvent() atomically
- *   3. ReactGuard calculates riskScore = 100 → calls pool.pause()
+ *   2. Somnia validators invoke Stasis._onEvent() atomically
+ *   3. Stasis calculates riskScore = 100 → calls pool.pause()
  *   4. pool.borrow() REVERTS with "pool is paused by guardian"
  *   ✅ Defense was entirely on-chain. Backend sent 0 defense transactions.
  */
@@ -28,7 +28,7 @@ async function simulateOracleAttack() {
   const pool   = new ethers.Contract(addresses.pool,     PoolABI,   attacker);
 
   console.log("═".repeat(60));
-  console.log("  🔥 ReactGuard Attack Simulation");
+  console.log("  🔥 Stasis Attack Simulation");
   console.log("═".repeat(60));
   console.log("  Attacker:  ", attacker.address);
   console.log("  Oracle:    ", addresses.oracle);
@@ -58,9 +58,9 @@ async function simulateOracleAttack() {
   console.log(`   🔗 TX: ${attackTx.hash}`);
   console.log(`   📦 Block: ${attackBlock}`);
 
-  // ── Step 2: Wait for Somnia validators to invoke ReactGuard ───
+  // ── Step 2: Wait for Somnia validators to invoke Stasis ───
   console.log(`\n[STEP 2] Somnia validators detecting PriceDrop subscription...`);
-  console.log(`   ⏳ ReactGuard._onEvent() → riskScore = 50+30+20 = 100 ≥ 80`);
+  console.log(`   ⏳ Stasis._onEvent() → riskScore = 50+30+20 = 100 ≥ 80`);
   console.log(`   ⚡ pool.pause() called on-chain — no backend tx sent!`);
 
   // Brief wait for Somnia's sub-second finality
@@ -85,13 +85,13 @@ async function simulateOracleAttack() {
 
   // ── Final summary ────────────────────────────────────────────
   console.log("\n" + "═".repeat(60));
-  const guardABI = require("../artifacts/src/ReactGuard.sol/ReactGuard.json").abi;
+  const guardABI = require("../artifacts/src/Stasis.sol/Stasis.json").abi;
   const guard = new ethers.Contract(addresses.guardian, guardABI, attacker);
   const defenseCount = await guard.totalDefensesTriggered();
   const lastScore    = await guard.lastRiskScore();
   const active       = await guard.defenseActive();
 
-  console.log("  📊 Final ReactGuard state:");
+  console.log("  📊 Final Stasis state:");
   console.log(`     Defenses triggered: ${defenseCount}`);
   console.log(`     Last risk score:    ${lastScore}/100`);
   console.log(`     Defense active:     ${active}`);

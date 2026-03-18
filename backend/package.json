@@ -1,9 +1,10 @@
 {
-  "name": "reactguard-backend",
+  "name": "stasis-backend",
   "version": "1.0.0",
-  "description": "ReactGuard Demo API — auto-signs attack/reset transactions",
+  "description": "Stasis Demo API — auto-signs attack/reset transactions",
   "type": "module",
   "scripts": {
+    "start": "node demo-server.js",
     "demo": "node --env-file=../.env demo-server.js"
   },
   "dependencies": {
@@ -11,4 +12,3 @@
     "express": "^4.21.0"
   }
 }
-

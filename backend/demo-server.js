@@ -1,14 +1,14 @@
 /**
- * ReactGuard Demo API Server
+ * Stasis Demo API Server
  *
  * Provides 1-click attack/reset for the dashboard without MetaMask popups.
  *
  * ATTACK FLOW (real Somnia Reactivity + fallback):
  *   1. Server sends ONLY oracle.setPrice(-20%) — one transaction
  *   2. Somnia validators detect PriceDrop event on-chain
- *   3. Validators automatically invoke ReactGuard._onEvent() in same block
+ *   3. Validators automatically invoke Stasis._onEvent() in same block
  *   4. _onEvent() checks risk score → calls pool.pause() if threshold met
- *   5. FALLBACK: If validators don't respond in 5s, manually trigger ReactGuard
+ *   5. FALLBACK: If validators don't respond in 5s, manually trigger Stasis
  *   6. Server polls until pool.paused() === true and reports latency
  *
  * This ensures the demo always works even if Somnia Reactivity has issues.
@@ -33,7 +33,7 @@ const provider = new ethers.JsonRpcProvider(RPC_URL)
 const wallet   = new ethers.Wallet(process.env.PRIVATE_KEY, provider)
 
 const ORACLE_ADDR = process.env.ORACLE_ADDRESS
-const GUARD_ADDR  = process.env.REACTGUARD_ADDRESS
+const GUARD_ADDR  = process.env.STASIS_ADDRESS
 const POOL_ADDR   = process.env.POOL_ADDRESS
 
 if (!ORACLE_ADDR || !GUARD_ADDR || !POOL_ADDR) {
@@ -180,9 +180,9 @@ app.post('/demo/reset', async (_req, res) => {
   }
 })
 
-const PORT = process.env.DEMO_PORT || 3001
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
-  console.log(`\n🚀 ReactGuard Demo API → http://localhost:${PORT}`)
+  console.log(`\n🚀 Stasis Demo API → http://localhost:${PORT}`)
   console.log(`   Wallet:  ${wallet.address}`)
   console.log(`   Oracle:  ${ORACLE_ADDR}`)
   console.log(`   Guard:   ${GUARD_ADDR}`)

@@ -1,23 +1,24 @@
 
 <div align="center">
 
-![ReactGuard](https://capsule-render.vercel.app/api?type=waving&color=0:0f172a,50:1e3a5f,100:0ea5e9&height=200&section=header&text=ReactGuard&fontSize=70&fontColor=ffffff&animation=fadeIn&fontAlignY=35&desc=Autonomous%20On-Chain%20DeFi%20Guardian&descAlignY=60&descColor=94d2ff)
+![Stasis](https://capsule-render.vercel.app/api?type=waving&color=0:0f172a,50:1e3a5f,100:0ea5e9&height=200&section=header&text=Stasis&fontSize=70&fontColor=ffffff&animation=fadeIn&fontAlignY=35&desc=Autonomous%20On-Chain%20DeFi%20Guardian&descAlignY=60&descColor=94d2ff)
 
-[![Live on Somnia](https://img.shields.io/badge/🔥%20Live-on%20Somnia%20Devnet-0ea5e9?style=for-the-badge&logo=ethereum&logoColor=white)](https://shannon-explorer.somnia.network/address/0x654Af00Ef47437911d52D12A88085E8f65b0F940)
+[![Live on Somnia](https://img.shields.io/badge/🔥%20Live-on%20Somnia%20Devnet-0ea5e9?style=for-the-badge&logo=ethereum&logoColor=white)](https://shannon-explorer.somnia.network/address/0x95Cc0Edf7DA5EC63471CD8C57bA5899423CC2CEA)
 [![Solidity](https://img.shields.io/badge/Solidity-0.8.30-6B46C1?style=for-the-badge&logo=solidity&logoColor=white)](https://soliditylang.org/)
-[![Tests](https://img.shields.io/badge/Tests-19%20Passing-22c55e?style=for-the-badge&logo=checkmarx&logoColor=white)](./test/ReactGuard.test.js)
+[![Tests](https://img.shields.io/badge/Tests-19%20Passing-22c55e?style=for-the-badge&logo=checkmarx&logoColor=white)](./test/Stasis.test.js)
 [![Zero-Click Demo](https://img.shields.io/badge/Zero--Click-Demo%20Ready-f59e0b?style=for-the-badge&logo=lightning&logoColor=white)]()
 [![License MIT](https://img.shields.io/badge/License-MIT-gray?style=for-the-badge)](./LICENSE)
 
-### *The first DeFi guardian that defends protocols **entirely on-chain**, with sub-second finality and zero off-chain dependencies.*
+# Stasis: Autonomous On-Chain DeFi Guardian
 
-[**The Problem**](#-the-problem) •
-[**The Solution**](#-the-solution) •
+**The first DeFi guardian that defends protocols entirely on-chain, with sub-second finality.**
+
+Traditional DeFi security relies on off-chain bots and manual intervention—which are too slow for today's hyper-fast attacks. Stasis fixes this by using Somnia's Native Reactivity.
+
 [**How It Works**](#-how-it-works) •
 [**Features**](#-features) •
 [**Live Demo**](#-live-demo) •
 [**Contracts**](#-live-contracts) •
-[**Tests**](#-test-coverage) •
 [**Quickstart**](#-quickstart) •
 [**Sponsors**](#-sponsors)
 
@@ -37,7 +38,7 @@ The three failure points of traditional defense:
 2. **The defense transaction has to win a race** against the attacker
 3. **There's no guarantee it gets included in time** — usually, it doesn't
 
-Traditional blockchains are **passive**. They wait to be asked. ReactGuard changes that.
+Traditional blockchains are **passive**. They wait to be asked. Stasis changes that.
 
 ---
 
@@ -45,18 +46,18 @@ Traditional blockchains are **passive**. They wait to be asked. ReactGuard chang
 
 > **Same Block. Atomic. Unstoppable.**
 
-ReactGuard registers directly with the Somnia Precompile at `0x0100`. The moment an oracle emits a price drop event, the Somnia Validator Network itself invokes `onEvent()` — in the **same block**, before any attacker can act. The pool is paused atomically. The borrow() call reverts. The attack never completes.
+Stasis registers directly with the Somnia Precompile at `0x0100`. The moment an oracle emits a price drop event, the Somnia Validator Network itself invokes `onEvent()` — in the **same block**, before any attacker can act. The pool is paused atomically. The borrow() call reverts. The attack never completes.
 
 **No Node.js. No AWS. No bot wallet. The blockchain is the guardian.**
 
 ```
-          [ TRADITIONAL EVM ]                    [ WITH REACTGUARD ]
+          [ TRADITIONAL EVM ]                    [ WITH STASIS ]
 
 Attack Tx ──► Oracle Price Drop       Attack Tx ──► Oracle Price Drop
                     │                                      │
                  15s gap                      [Same Block, Validators]
                     │                                      │
-             Off-chain bot                     ⚡ ReactGuard.onEvent()
+             Off-chain bot                     ⚡ Stasis.onEvent()
              detects & sends                   runs ON-CHAIN automatically
              defense tx                                    │
                     │                            pool.pause()  ATOMIC
@@ -73,10 +74,10 @@ Attack Tx ──► Oracle Price Drop       Attack Tx ──► Oracle Price Dro
 An attacker (or the demo button) calls `setPrice()` on the oracle, dropping the price by 20% or more.
 
 **② Somnia Reacts**
-The oracle emits a `PriceDrop` event. The Somnia Precompile (`0x0100`) detects the subscription match and invokes `onEvent()` on ReactGuard in the **same block**.
+The oracle emits a `PriceDrop` event. The Somnia Precompile (`0x0100`) detects the subscription match and invokes `onEvent()` on Stasis in the **same block**.
 
 **③ Protocol Protected**
-ReactGuard checks the drop threshold, calls `pause()` on the lending pool, and emits `ProtocolPaused`. The attacker's borrow transaction hits a paused pool and reverts.
+Stasis checks the drop threshold, calls `pause()` on the lending pool, and emits `ProtocolPaused`. The attacker's borrow transaction hits a paused pool and reverts.
 
 ```
 sequenceDiagram
@@ -84,18 +85,18 @@ sequenceDiagram
     actor Attacker as 🔴 Attacker
     participant Oracle as 📈 MockOracle
     participant Validators as ⚡ Somnia Validators
-    participant ReactGuard as 🛡️ ReactGuard
+    participant Stasis as 🛡️ Stasis
     participant Pool as 🏦 MockLendingPool
 
     Attacker->>Oracle: setPrice(-20%)
     Oracle->>Oracle: Emit PriceDrop(800, 640, 2000 bps)
     Oracle-->>Validators: Event propagated to precompile
     Note over Validators: 0x0100 detects subscription match
-    Validators->>ReactGuard: onEvent(oracle, topics, data) [same block]
-    ReactGuard->>ReactGuard: Decode dropBps = 2000 ≥ THRESHOLD
-    ReactGuard->>Pool: pause() [atomic]
-    Pool-->>ReactGuard: ✅ Pool is now PAUSED
-    ReactGuard-->>Attacker: emit ProtocolPaused
+    Validators->>Stasis: onEvent(oracle, topics, data) [same block]
+    Stasis->>Stasis: Decode dropBps = 2000 ≥ THRESHOLD
+    Stasis->>Pool: pause() [atomic]
+    Pool-->>Stasis: ✅ Pool is now PAUSED
+    Stasis-->>Attacker: emit ProtocolPaused
     Note over Pool: All borrow() calls now REVERT ✅
 ```
 
@@ -107,9 +108,9 @@ sequenceDiagram
 
 | | |
 |---|---|
-| 🤖 **Autonomous On-Chain Defense** — ReactGuard inherits `SomniaEventHandler`. The Somnia Validator Network calls `onEvent()` in the same block as the attack. No human, no server, and no bot is involved in the defense execution. | 🛡️ **Hack-Proof Architecture** — The `onEvent()` function only accepts calls from the Somnia Precompile address `0x0100`, hardcoded at the Solidity level. Even the contract owner cannot manually trigger a defense. The system cannot be spoofed. |
+| 🤖 **Autonomous On-Chain Defense** — Stasis inherits `SomniaEventHandler`. The Somnia Validator Network calls `onEvent()` in the same block as the attack. No human, no server, and no bot is involved in the defense execution. | 🛡️ **Hack-Proof Architecture** — The `onEvent()` function only accepts calls from the Somnia Precompile address `0x0100`, hardcoded at the Solidity level. Even the contract owner cannot manually trigger a defense. The system cannot be spoofed. |
 | 🔍 **Full On-Chain Transparency** — Every intervention produces a transaction hash. Every defense is verifiable on the Shannon Explorer. There are no off-chain logs, no black boxes, and no trust required. | ⚡ **Zero-Click Demo Mode** — The backend auto-signs the attack transaction so anyone can see the system work without a wallet or MetaMask popup. The full transaction hash is shown on screen and verifiable on-chain instantly. |
-| 🌍 **Drop-In Protocol Protection** — Any lending protocol — Aave fork, Compound fork, or custom pool — can deploy ReactGuard as its guardian. One deployment, one subscription, and your protocol is protected. | 🔗 **Native Somnia Integration** — ReactGuard uses Somnia's official `SomniaEventHandler` interface and registers with the `0x0100` precompile, making full use of Somnia's sub-second native reactivity. |
+| 🌍 **Drop-In Protocol Protection** — Any lending protocol — Aave fork, Compound fork, or custom pool — can deploy Stasis as its guardian. One deployment, one subscription, and your protocol is protected. | 🔗 **Native Somnia Integration** — Stasis uses Somnia's official `SomniaEventHandler` interface and registers with the `0x0100` precompile, making full use of Somnia's sub-second native reactivity. |
 
 ---
 
@@ -117,7 +118,7 @@ sequenceDiagram
 
 > **See It Defend. In Real Time.**
 
-Clone the repo, start the backend, open the dashboard, and click **🔴 Simulate Attack**. The backend sends a signed oracle transaction dropping the price by 20%. Watch the dashboard update live as ReactGuard intercepts it on-chain. Copy the transaction hash and verify it yourself on the Shannon Explorer.
+Clone the repo, start the backend, open the dashboard, and click **🔴 Simulate Attack**. The backend sends a signed oracle transaction dropping the price by 20%. Watch the dashboard update live as Stasis intercepts it on-chain. Copy the transaction hash and verify it yourself on the Shannon Explorer.
 
 **No wallet needed. Everything is verifiable on-chain.**
 
@@ -141,12 +142,12 @@ Open `http://localhost:5173` and click **🔴 Simulate Attack**.
 
 | Contract | Address | Explorer |
 |---|---|---|
-| 📈 **MockOracle** | `0xE5b2AD1558949447eD7b135ceB40baA894f417A1` | [View ↗](https://shannon-explorer.somnia.network/address/0xE5b2AD1558949447eD7b135ceB40baA894f417A1) |
-| 🛡️ **ReactGuard** | `0x654Af00Ef47437911d52D12A88085E8f65b0F940` | [View ↗](https://shannon-explorer.somnia.network/address/0x654Af00Ef47437911d52D12A88085E8f65b0F940) |
-| 🏦 **MockLendingPool** | `0xA8DC52496d077E823675F114f2D8469C7a6E97d8` | [View ↗](https://shannon-explorer.somnia.network/address/0xA8DC52496d077E823675F114f2D8469C7a6E97d8) |
-| ⚡ **Subscription ID** | `6879957816108517943170610238244214937208003125` | [Internal Txns ↗](https://shannon-explorer.somnia.network/address/0x654Af00Ef47437911d52D12A88085E8f65b0F940?tab=internal_txs) |
+| 📈 **MockOracle** | `0x3B24D72964eB7D148dB1c77BA5E8E05A3e4a71Df` | [View ↗](https://shannon-explorer.somnia.network/address/0x3B24D72964eB7D148dB1c77BA5E8E05A3e4a71Df) |
+| 🛡️ **Stasis** | `0x95Cc0Edf7DA5EC63471CD8C57bA5899423CC2CEA` | [View ↗](https://shannon-explorer.somnia.network/address/0x95Cc0Edf7DA5EC63471CD8C57bA5899423CC2CEA) |
+| 🏦 **MockLendingPool** | `0x027E3FA613Db4d06B65555215fC35A7dDEAe6BDA` | [View ↗](https://shannon-explorer.somnia.network/address/0x027E3FA613Db4d06B65555215fC35A7dDEAe6BDA) |
+| ⚡ **Subscription ID** | `6879957816108517943170610238244214937208003125` | [Internal Txns ↗](https://shannon-explorer.somnia.network/address/0x95Cc0Edf7DA5EC63471CD8C57bA5899423CC2CEA?tab=internal_txs) |
 
-> **Proof of Reactivity:** Click "Internal Txns" on the ReactGuard contract. You will see successful calls originating from **`0x000...0100`** — that is the Somnia blockchain itself defending the protocol.
+> **Proof of Reactivity:** Click "Internal Txns" on the Stasis contract. You will see successful calls originating from **`0x000...0100`** — that is the Somnia blockchain itself defending the protocol.
 
 ---
 
@@ -154,14 +155,14 @@ Open `http://localhost:5173` and click **🔴 Simulate Attack**.
 
 > **19 Tests. All Passing.**
 
-ReactGuard ships with a full test suite covering oracle behavior, pool security, risk engine logic, event handling, and a complete end-to-end attack scenario.
+Stasis ships with a full test suite covering oracle behavior, pool security, risk engine logic, event handling, and a complete end-to-end attack scenario.
 
 ```bash
 npx hardhat test
 ```
 
 ```
-  ReactGuard System
+  Stasis System
 
     MockOracle
       ✔ deploys with default price of 1000 ETH
@@ -170,14 +171,14 @@ npx hardhat test
       ✔ rejects price updates from non-owner
 
     MockLendingPool — Security
-      ✔ guardian is correctly set to ReactGuard
+      ✔ guardian is correctly set to Stasis
       ✔ rejects pause() from a random user
       ✔ rejects pause() from the deployer/owner
       ✔ rejects pause() from an attacker
       ✔ only owner can unpause; random user cannot
       ✔ borrow() reverts when pool is paused
 
-    ReactGuard — Risk Engine
+    Stasis — Risk Engine
       ✔ pauses pool on a 20% drop (at threshold)
       ✔ pauses pool on a drop > 20%
       ✔ does NOT pause on a drop below threshold
@@ -200,7 +201,7 @@ npx hardhat test
 | Feature | Design |
 |---|---|
 | `onEvent()` caller | Only the Somnia Precompile (`0x0100`) — hardcoded in `SomniaEventHandler` |
-| `pause()` caller | Only `ReactGuard` contract — set as `guardian` at pool deployment |
+| `pause()` caller | Only `Stasis` contract — set as `guardian` at pool deployment |
 | `unpause()` caller | Only deployer/owner — for demo resets |
 | `setSubscriptionId` | Only contract owner — syncs on-chain ID to storage |
 | Off-chain bots | **None** — zero off-chain defense execution |
@@ -209,10 +210,10 @@ npx hardhat test
 
 ```
 1. Deploy MockOracle
-2. Deploy ReactGuard(oracleAddr)          ← Inherits SomniaEventHandler
-3. Deploy MockLendingPool(reactGuardAddr) ← Guardian = ReactGuard
-4. reactGuard.setLendingPool(poolAddr)    ← Link complete
-5. run setup-subscription.js              ← Register with Precompile (0x0100)
+2. Deploy Stasis(oracleAddr)          ← Inherits SomniaEventHandler
+3. Deploy MockLendingPool(stasisAddr) ← Guardian = Stasis
+4. stasis.setLendingPool(poolAddr)    ← Link complete
+5. run setup-subscription.js          ← Register with Precompile (0x0100)
 ```
 
 ---
@@ -230,8 +231,8 @@ npx hardhat test
 
 ```bash
 # Clone the repository
-git clone https://github.com/Ankit-raj-11/ReactGuard.git
-cd ReactGuard
+git clone https://github.com/Ankit-raj-11/Stasis.git
+cd Stasis
 
 # Install all dependencies
 npm install
@@ -266,7 +267,7 @@ flowchart LR
         direction TB
         ORA["📈 MockOracle"]
         PRECOMPILE["⚡ Somnia Precompile\n0x0100"]
-        RG["🛡️ ReactGuard\nSomniaEventHandler"]
+        RG["🛡️ Stasis\nSomniaEventHandler"]
         POOL["🏦 MockLendingPool"]
     end
 
@@ -283,10 +284,10 @@ flowchart LR
 ## 📁 Project Structure
 
 ```
-ReactGuard/
+Stasis/
 ├── 📜 contracts/
 │   ├── MockOracle.sol            # Price oracle — emits PriceDrop on ≥5% drops
-│   ├── ReactGuard.sol            # SomniaEventHandler — on-chain risk engine
+│   ├── Stasis.sol                # SomniaEventHandler — on-chain risk engine
 │   ├── MockLendingPool.sol       # Guardian-only pause, owner unpause
 │   └── interfaces/
 │       ├── ISomniaReactivityPrecompile.sol
@@ -299,7 +300,7 @@ ReactGuard/
 │   └── check-status.js          # Real-time on-chain status reader
 │
 ├── 🧪 test/
-│   └── ReactGuard.test.js        # 19 tests — all passing
+│   └── Stasis.test.js            # 19 tests — all passing
 │
 ├── 🚀 backend/
 │   └── demo-server.js            # Express API: auto-signs txs for demo
@@ -337,7 +338,7 @@ ReactGuard/
 
 ## 🏆 Sponsors
 
-> ReactGuard was built for and made possible by the following sponsors and ecosystem partners.
+> Stasis was built for and made possible by the following sponsors and ecosystem partners.
 
 ---
 
@@ -348,7 +349,7 @@ ReactGuard/
 <!-- Add title sponsor logo and link here -->
 <!-- Example: [![Sponsor Name](sponsor-logo-url)](sponsor-website) -->
 
-*Interested in sponsoring ReactGuard? Reach out via GitHub Issues.*
+*Interested in sponsoring Stasis? Reach out via GitHub Issues.*
 
 ---
 
@@ -376,7 +377,7 @@ ReactGuard/
 
 </div>
 
-> If you or your organization contributed to making ReactGuard possible and would like to be listed here, please open a PR or GitHub Issue with your logo, link, and tier.
+> If you or your organization contributed to making Stasis possible and would like to be listed here, please open a PR or GitHub Issue with your logo, link, and tier.
 
 ---
 
@@ -385,8 +386,8 @@ ReactGuard/
 ![Footer](https://capsule-render.vercel.app/api?type=waving&color=0:0ea5e9,50:1e3a5f,100:0f172a&height=100&section=footer)
 
 *Built for the Somnia Reactivity Hackathon.*
-*ReactGuard proves that sub-second, trustless, and fully autonomous DeFi security is here today.*
+*Stasis proves that sub-second, trustless, and fully autonomous DeFi security is here today.*
 
-**[⭐ Star this repo](https://github.com/Ankit-raj-11/ReactGuard) if ReactGuard impressed you!**
+**[⭐ Star this repo](https://github.com/Ankit-raj-11/Stasis) if Stasis impressed you!**
 
 </div>

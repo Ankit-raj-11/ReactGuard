@@ -4,7 +4,7 @@ const path = require("path");
 
 async function main() {
   const [deployer] = await ethers.getSigners();
-  console.log("Deploying ReactGuard Protocol...");
+  console.log("Deploying Stasis Protocol...");
   console.log("Deployer:", deployer.address);
   console.log(
     "Balance:",
@@ -25,20 +25,20 @@ async function main() {
   await Pool.waitForDeployment();
   console.log("  ✅ MockLendingPool:", Pool.target);
 
-  // 3. Deploy ReactGuard (the on-chain risk engine)
-  console.log("\n[3/3] Deploying ReactGuard (SomniaEventHandler)...");
-  const Guard = await ethers.deployContract("ReactGuard", [
+  // 3. Deploy Stasis (the on-chain risk engine)
+  console.log("\n[3/3] Deploying Stasis (SomniaEventHandler)...");
+  const Guard = await ethers.deployContract("Stasis", [
     Pool.target,
     Oracle.target,
   ]);
   await Guard.waitForDeployment();
-  console.log("  ✅ ReactGuard:", Guard.target);
+  console.log("  ✅ Stasis:", Guard.target);
 
-  // 4. Set ReactGuard as the pool's guardian
-  console.log("\n[4/4] Configuring: Setting ReactGuard as pool guardian...");
+  // 4. Set Stasis as the pool's guardian
+  console.log("\n[4/4] Configuring: Setting Stasis as pool guardian...");
   const tx = await Pool.setGuardian(Guard.target);
   await tx.wait();
-  console.log("  ✅ Guardian set — ReactGuard can now pause the pool");
+  console.log("  ✅ Guardian set — Stasis can now pause the pool");
 
   // 5. Seed the pool with some STT for borrow demo
   console.log("\n[5/5] Seeding pool with 1 STT for demo borrowing...");
@@ -72,7 +72,7 @@ async function main() {
   fs.writeFileSync(outPath, JSON.stringify(addresses, null, 2));
   console.log(`\n✅ Addresses saved to deployed-addresses.json`);
   console.log("─".repeat(50));
-  console.log("\n🚀 ReactGuard Protocol deployed successfully!");
+  console.log("\n🚀 Stasis Protocol deployed successfully!");
   console.log(
     "   Next: run `npm run subscribe` to activate Reactivity subscription."
   );

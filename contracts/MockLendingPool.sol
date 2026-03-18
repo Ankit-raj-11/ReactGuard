@@ -4,13 +4,14 @@ pragma solidity ^0.8.20;
 /**
  * @title MockLendingPool
  * @notice Simulates a DeFi lending pool that can be paused by its guardian (ReactGuard).
- *         Only the guardian (ReactGuard contract) can call pause().
+ * @notice Simulates a DeFi lending pool that can be paused by its guardian (Stasis).
+ *         Only the guardian (Stasis contract) can call pause().
  *         The deployer (owner) can unpause for demo/reset purposes.
  */
 contract MockLendingPool {
     bool public paused;
 
-    /// @notice The ReactGuard contract — the ONLY address allowed to pause this pool
+    /// @notice The Stasis contract    // Stasis is the only one who can pause()
     address public guardian;
 
     /// @notice The deployer — allowed to unpause (for demo resets)

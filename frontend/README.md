@@ -1,4 +1,4 @@
-# Frontend — ReactGuard Dashboard
+# Frontend — Stasis Dashboard
 
 ## Setup
 
@@ -14,6 +14,6 @@ npm run dev
 | Variable | Source |
 |---|---|
 | `VITE_ORACLE_ADDRESS` | Printed by `deploy.js` |
-| `VITE_REACTGUARD_ADDRESS` | Printed by `deploy.js` |
+| `VITE_STASIS_ADDRESS` | Printed by `deploy.js` |
 | `VITE_POOL_ADDRESS` | Printed by `deploy.js` |
 | `VITE_RPC_URL` | Somnia RPC (default pre-filled) |

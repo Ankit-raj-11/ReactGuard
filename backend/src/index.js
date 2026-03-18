@@ -15,11 +15,11 @@ app.use((req, res, next) => {
 
 // Health check
 app.get("/health", (_req, res) =>
-  res.json({ status: "ok", service: "ReactGuard Monitor", timestamp: Date.now() })
+  res.json({ status: "ok", service: "Stasis Monitor", timestamp: Date.now() })
 );
 
 // Expose contract addresses for the frontend to load
-app.get("/addresses", (_req, res) => {
+app.get("/addresses", async (_req, res) => {
   try {
     const { readFileSync } = await import("fs");
     const addrs = JSON.parse(readFileSync("../contracts/deployed-addresses.json", "utf8"));

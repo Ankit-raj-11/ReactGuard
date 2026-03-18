@@ -16,7 +16,7 @@ const ORACLE_ABI = [
   'event PriceUpdated(int256 indexed oldPrice, int256 indexed newPrice)',
 ]
 
-const REACTGUARD_ABI = [
+const STASIS_ABI = [
   'function getStatus() view returns (bool poolPaused, uint256 interventions, uint256 lastDefended, uint256 lastDrop)',
   'function THRESHOLD_BPS() view returns (uint256)',
   'function subscriptionId() view returns (uint256)',
@@ -32,7 +32,7 @@ const POOL_ABI = [
 
 const RPC_URL = import.meta.env.VITE_RPC_URL || 'https://dream-rpc.somnia.network'
 const ORACLE_ADDR = import.meta.env.VITE_ORACLE_ADDRESS || ''
-const GUARD_ADDR  = import.meta.env.VITE_REACTGUARD_ADDRESS || ''
+const GUARD_ADDR  = import.meta.env.VITE_STASIS_ADDRESS || ''
 const POOL_ADDR   = import.meta.env.VITE_POOL_ADDRESS || ''
 const API_BASE    = import.meta.env.VITE_BACKEND_URL || ''
 
@@ -96,7 +96,7 @@ export default function Simulation() {
   const initContracts = useCallback(async (provider) => {
     try {
       const oracle = new ethers.Contract(ORACLE_ADDR, ORACLE_ABI, provider)
-      const guard  = new ethers.Contract(GUARD_ADDR,  REACTGUARD_ABI, provider)
+      const guard  = new ethers.Contract(GUARD_ADDR,  STASIS_ABI, provider)
       const pool   = new ethers.Contract(POOL_ADDR,   POOL_ABI, provider)
 
       const [priceVal, status, pausedVal, subId] = await Promise.all([
@@ -139,7 +139,7 @@ export default function Simulation() {
 
       pool.on('Paused', (by) => {
         setPoolPaused(true)
-        addEvent('defend', `Pool PAUSED by ReactGuard (${shortAddr(by)}). All borrows now reverting.`)
+        addEvent('defend', `Pool PAUSED by Stasis (${shortAddr(by)}). All borrows now reverting.`)
       })
 
       pool.on('Unpaused', (by) => {
@@ -324,11 +324,11 @@ export default function Simulation() {
           <div className="header-inner">
             <RouterLink to="/" className="logo" style={{ textDecoration: 'none' }}>
               <div className="logo-icon">
-                <Shield size={22} strokeWidth={2} color="#fff" />
+                <Shield size={20} strokeWidth={2} color="#fff" />
               </div>
               <div className="logo-text">
-                <h1>ReactGuard</h1>
-                <p>Somnia Native Reactivity • DeFi Guardian</p>
+                <h1 style={{ color: '#fff' }}>Stasis</h1>
+                <p>On-Chain Autonomous Security • DeFi Guardian</p>
               </div>
             </RouterLink>
             <div className="header-badges">
@@ -391,7 +391,14 @@ export default function Simulation() {
                 {loading ? '…' : price != null ? `$${fmtPrice(price)}` : '—'}
               </div>
               <div className="card-sub">ETH/USD · MockOracle</div>
-              <div className="addr">{ORACLE_ADDR || 'No address set'}</div>
+              <a 
+                href={`https://shannon-explorer.somnia.network/address/${ORACLE_ADDR}`} 
+                target="_blank" 
+                rel="noreferrer" 
+                className="addr-link"
+              >
+                <div className="addr">{ORACLE_ADDR || 'No address set'}</div>
+              </a>
             </div>
 
             <div className="card">
@@ -402,9 +409,25 @@ export default function Simulation() {
               <div className="card-value val-blue">{interventions}</div>
               <div className="card-sub">Automatic interventions</div>
               <div className="card-sub mt-1" style={{ fontSize: '10px', opacity: 0.8 }}>
-                ID: {subscriptionId && subscriptionId !== '0' ? subscriptionId : 'Initializing...'}
+                ID: {subscriptionId && subscriptionId !== '0' ? (
+                  <a 
+                    href={`https://shannon-explorer.somnia.network/address/${GUARD_ADDR}?tab=internal_txs`} 
+                    target="_blank" 
+                    rel="noreferrer" 
+                    style={{ color: 'var(--blue)', textDecoration: 'none', fontWeight: '600' }}
+                  >
+                    {subscriptionId}
+                  </a>
+                ) : 'Initializing...'}
               </div>
-              <div className="addr">{GUARD_ADDR || 'No address set'}</div>
+              <a 
+                href={`https://shannon-explorer.somnia.network/address/${GUARD_ADDR}?tab=internal_txs`} 
+                target="_blank" 
+                rel="noreferrer" 
+                className="addr-link"
+              >
+                <div className="addr">{GUARD_ADDR || 'No address set'}</div>
+              </a>
             </div>
 
             <div className="card">
@@ -417,7 +440,14 @@ export default function Simulation() {
               <div className="card-sub">
                 {poolPaused ? 'Borrows reverting — pool protected' : 'Deposits & borrows open'}
               </div>
-              <div className="addr">{POOL_ADDR || 'No address set'}</div>
+              <a 
+                href={`https://shannon-explorer.somnia.network/address/${POOL_ADDR}`} 
+                target="_blank" 
+                rel="noreferrer" 
+                className="addr-link"
+              >
+                <div className="addr">{POOL_ADDR || 'No address set'}</div>
+              </a>
             </div>
           </div>
 
@@ -491,7 +521,7 @@ export default function Simulation() {
                 </span>
               </div>
               <p className="simulator-help">
-                Trigger a 20% price drop on-chain. ReactGuard will react autonomously.
+                Trigger a 20% price drop on-chain. Stasis will react autonomously.
                 <br />
                 <span style={{ fontSize: '0.8rem', opacity: 0.7 }}>
                   (No MetaMask approval needed — backend auto-signs the attack)
@@ -505,7 +535,7 @@ export default function Simulation() {
                   </div>
                   <div className="sim-step">
                     <div className="step-num">2</div>
-                    <div className="step-text"><b>Somnia Validators</b> — detect event & invoke ReactGuard.onEvent()</div>
+                    <div className="step-text"><b>Somnia Validators</b> — detect event & invoke Stasis.onEvent()</div>
                   </div>
                   <div className="sim-step">
                     <div className="step-num">3</div>
@@ -544,7 +574,7 @@ export default function Simulation() {
         
         {/* ── Footer ── */}
         <footer className="footer">
-          Built on <span>Somnia</span> Native Reactivity · ReactGuard © 2025 ·
+          Built on <span>Somnia</span> Native Reactivity · Stasis © 2026 ·
           Contracts: <span>{ORACLE_ADDR ? shortAddr(ORACLE_ADDR) : 'Not deployed'}</span>
         </footer>
       </aside>

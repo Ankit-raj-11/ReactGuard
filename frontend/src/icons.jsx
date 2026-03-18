@@ -34,3 +34,4 @@ export const Wallet = (props) => <SvgIcon {...props}><path d="M21 12V7H5a2 2 0 0
 export const ChevronRight = (props) => <SvgIcon {...props}><path d="m9 18 6-6-6-6"/></SvgIcon>;
 export const TrendingDown = (props) => <SvgIcon {...props}><polyline points="22 17 13.5 8.5 8.5 13.5 2 7"/><polyline points="16 17 22 17 22 11"/></SvgIcon>;
 export const Play = (props) => <SvgIcon {...props} fill="currentColor"><polygon points="5 3 19 12 5 21 5 3" /></SvgIcon>;
+export const Cpu = (props) => <SvgIcon {...props}><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="15" x2="23" y2="15"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="15" x2="4" y2="15"/></SvgIcon>;

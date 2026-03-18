@@ -6,7 +6,7 @@ require("dotenv").config();
 
 async function main() {
   const [deployer] = await ethers.getSigners();
-  console.log("🚀 Deploying ReactGuard system...");
+  console.log("🚀 Deploying Stasis system...");
   console.log("   Deployer:", deployer.address);
   console.log(
     "   Balance:",
@@ -22,29 +22,29 @@ async function main() {
   const oracleAddress = await oracle.getAddress();
   console.log("✅ MockOracle deployed at:", oracleAddress);
 
-  // Step 2: ReactGuard (pool = address(0) for now)
-  const ReactGuard = await ethers.getContractFactory("ReactGuard");
-  const reactGuard = await ReactGuard.deploy(oracleAddress, ethers.ZeroAddress);
-  await reactGuard.waitForDeployment();
-  const reactGuardAddress = await reactGuard.getAddress();
-  console.log("✅ ReactGuard deployed at:", reactGuardAddress);
+  // Step 2: Stasis (pool = address(0) for now)
+  const Stasis = await ethers.getContractFactory("Stasis");
+  const stasis = await Stasis.deploy(await oracle.getAddress(), ethers.ZeroAddress);
+  await stasis.waitForDeployment();
+  const stasisAddr = await stasis.getAddress();
+  console.log("Stasis deployed to:", stasisAddr);
 
-  // Step 3: MockLendingPool (guardian = ReactGuard)
+  // Step 3: MockLendingPool (guardian = Stasis)
   const MockLendingPool = await ethers.getContractFactory("MockLendingPool");
-  const lendingPool = await MockLendingPool.deploy(reactGuardAddress);
+  const lendingPool = await MockLendingPool.deploy(stasisAddr);
   await lendingPool.waitForDeployment();
-  const poolAddress = await lendingPool.getAddress();
-  console.log("✅ MockLendingPool deployed at:", poolAddress);
+  const poolAddr = await lendingPool.getAddress();
+  console.log("MockLendingPool deployed to:", poolAddr);
 
-  // Step 4: Link pool into ReactGuard
-  const tx = await reactGuard.setLendingPool(poolAddress);
+  // Step 4: Link back
+  await stasis.setLendingPool(poolAddr);
   await tx.wait();
-  console.log("✅ ReactGuard linked to MockLendingPool\n");
+  console.log("✅ Stasis linked to MockLendingPool\n");
 
   // Verify
   const guardian = await lendingPool.guardian();
   console.log("🔍 Verification:");
-  console.log("   Pool guardian is ReactGuard:", guardian.toLowerCase() === reactGuardAddress.toLowerCase());
+  console.log("   Pool guardian is Stasis:", guardian.toLowerCase() === stasisAddress.toLowerCase());
   console.log("   ⚡ Next: run setup-subscription.js to activate Somnia Reactivity");
 
   // Save addresses to .env
@@ -53,10 +53,10 @@ async function main() {
 
   const updates = {
     ORACLE_ADDRESS: oracleAddress,
-    REACTGUARD_ADDRESS: reactGuardAddress,
+    STASIS_ADDRESS: stasisAddress,
     POOL_ADDRESS: poolAddress,
     VITE_ORACLE_ADDRESS: oracleAddress,
-    VITE_REACTGUARD_ADDRESS: reactGuardAddress,
+    VITE_STASIS_ADDRESS: stasisAddress,
     VITE_POOL_ADDRESS: poolAddress,
   };
 
@@ -72,10 +72,10 @@ async function main() {
   writeFileSync(envPath, envContent.trim() + "\n");
 
   console.log("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-  console.log("🎉 ReactGuard system deployed and configured!");
+  console.log("🎉 Stasis system deployed and configured!");
   console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
   console.log("   ORACLE_ADDRESS    =", oracleAddress);
-  console.log("   REACTGUARD_ADDRESS=", reactGuardAddress);
+  console.log("   STASIS_ADDRESS=", stasisAddress);
   console.log("   POOL_ADDRESS      =", poolAddress);
   console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
   console.log("📝 Addresses saved to .env");

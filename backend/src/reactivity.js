@@ -43,14 +43,13 @@ const PoolABI = [
 ];
 
 const GuardABI = [
-  { name: "totalDefensesTriggered", type: "function", stateMutability: "view", inputs: [], outputs: [{ type: "uint256" }] },
-  { name: "lastRiskScore",          type: "function", stateMutability: "view", inputs: [], outputs: [{ type: "uint256" }] },
-  { name: "defenseActive",          type: "function", stateMutability: "view", inputs: [], outputs: [{ type: "bool" }] },
-  { name: "DefenseTriggered", type: "event", inputs: [
-    { name: "defenseType", type: "string",  indexed: false },
-    { name: "riskScore",   type: "uint256", indexed: false },
-    { name: "emitter",     type: "address", indexed: true  },
-    { name: "timestamp",   type: "uint256", indexed: false },
+  { name: "totalInterventions", type: "function", stateMutability: "view", inputs: [], outputs: [{ type: "uint256" }] },
+  { name: "lastDropBps",         type: "function", stateMutability: "view", inputs: [], outputs: [{ type: "uint256" }] },
+  { name: "ProtocolPaused",      type: "event", inputs: [
+    { name: "dropBps",  type: "uint256", indexed: false },
+    { name: "oldPrice", type: "int256",  indexed: false },
+    { name: "newPrice", type: "int256",  indexed: false },
+    { name: "timestamp",type: "uint256", indexed: false },
   ]},
 ];
 
@@ -88,12 +87,12 @@ export async function startReactivityStream() {
       {
         address:      addresses.guardian,
         abi:          GuardABI,
-        functionName: "totalDefensesTriggered",
+        functionName: "totalInterventions",
       },
       {
         address:      addresses.guardian,
         abi:          GuardABI,
-        functionName: "lastRiskScore",
+        functionName: "lastDropBps",
       },
     ],
     onData: (data) => {

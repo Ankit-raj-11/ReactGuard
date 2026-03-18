@@ -11,7 +11,7 @@ async function main() {
   }
 
   const [deployer] = await ethers.getSigners();
-  console.log("🔄 Resetting ReactGuard demo state...");
+  console.log("🔄 Resetting Stasis demo state...");
 
   const oracle = await ethers.getContractAt("MockOracle", oracleAddress);
   const pool = await ethers.getContractAt("MockLendingPool", poolAddress);

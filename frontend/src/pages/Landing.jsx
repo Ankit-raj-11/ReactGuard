@@ -1,5 +1,5 @@
 import { Link } from "../App.jsx";
-import { Shield, Zap, Database, Activity, AlertTriangle, Clock, Radio, TrendingDown, CheckCircle } from "../icons.jsx";
+import { Shield, Zap, Database, Activity, AlertTriangle, Clock, Radio, TrendingDown, CheckCircle, Copy, Cpu } from "../icons.jsx";
 import SnapshotImg from "../assets/Snapshot.png";
 import GithubIcon from "../assets/github.png";
 import XIcon from "../assets/x.png";
@@ -19,6 +19,20 @@ export default function Landing() {
     e.preventDefault();
     setIsLocked(!isLocked);
   };
+
+  const ORACLE_ADDR = import.meta.env.VITE_ORACLE_ADDRESS || "0x3B24D72964eB7D148dB1c77BA5E8E05A3e4a71Df";
+  const GUARD_ADDR = import.meta.env.VITE_STASIS_ADDRESS || "0x95Cc0Edf7DA5EC63471CD8C57bA5899423CC2CEA";
+  const POOL_ADDR = import.meta.env.VITE_POOL_ADDRESS || "0x027E3FA613Db4d06B65555215fC35A7dDEAe6BDA";
+  const SUB_ID = import.meta.env.VITE_SUBSCRIPTION_ID || "6879957816108517943170610238244214937208003125";
+
+  const copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text);
+    const notification = document.createElement('div');
+    notification.className = 'copy-notification';
+    notification.innerText = 'Copied to clipboard!';
+    document.body.appendChild(notification);
+    setTimeout(() => notification.remove(), 2000);
+  };
   
   return (
     <div className="landing-container">
@@ -29,7 +43,7 @@ export default function Landing() {
             <Shield size={20} strokeWidth={2} color="#fff" />
           </div>
           <div className="logo-text">
-            <h1>ReactGuard</h1>
+            <h1 style={{ color: '#fff' }}>Stasis</h1>
           </div>
         </Link>
         
@@ -81,7 +95,7 @@ export default function Landing() {
           </div>
           <a href="#sponsors" className="nav-link">Sponsors</a>
           <div style={{ width: '1px', height: '20px', background: 'var(--border)', margin: '0 8px' }}></div>
-          <a href="https://github.com/Ankit-raj-11/ReactGuard" target="_blank" rel="noreferrer" className="nav-link github-nav-link" style={{ display: 'flex', alignItems: 'center', opacity: 1 }}>
+          <a href="https://github.com/Ankit-raj-11/Stasis" target="_blank" rel="noreferrer" className="nav-link github-nav-link" style={{ display: 'flex', alignItems: 'center', opacity: 1 }}>
             <img src={GithubIcon} alt="GitHub" style={{ width: '22px', height: '22px', filter: 'brightness(0) invert(1)', display: 'block' }} />
           </a>
           <Link to="/simulation" className="connect-btn" style={{ textDecoration: 'none' }}>
@@ -106,8 +120,8 @@ export default function Landing() {
             <Link to="/simulation" className="connect-btn" style={{ padding: '16px 32px', fontSize: '15px', textDecoration: 'none' }}>
               Enter Zero-Click Demo
             </Link>
-            <a href="https://github.com/Ankit-raj-11/ReactGuard" target="_blank" rel="noreferrer" className="reset-btn" style={{ padding: '16px 32px', fontSize: '15px', textDecoration: 'none' }}>
-              View Contracts
+            <a href="#contracts" className="reset-btn" style={{ padding: '16px 32px', fontSize: '15px', textDecoration: 'none' }}>
+              See Contracts
             </a>
           </div>
         </div>
@@ -122,23 +136,25 @@ export default function Landing() {
             <div className="dot"></div>
           </div>
           <div className="showcase-content" style={{ padding: 0 }}>
-            <img src={SnapshotImg} alt="ReactGuard Interface Snapshot" style={{ width: '100%', height: 'auto', display: 'block', borderBottomLeftRadius: 'var(--radius)', borderBottomRightRadius: 'var(--radius)' }} />
+            <img src={SnapshotImg} alt="Stasis Interface Snapshot" style={{ width: '100%', height: 'auto', display: 'block', borderBottomLeftRadius: 'var(--radius)', borderBottomRightRadius: 'var(--radius)' }} />
           </div>
         </div>
       </section>
 
-      {/* ── Why ReactGuard? ── */}
+      {/* ── Why Stasis? ── */}
       <section className="landing-section" id="why" style={{ background: 'var(--bg-secondary)' }}>
         <div className="section-container">
           <div className="section-header">
-            <h2 className="section-title"><Shield size={28} color="var(--blue)" /> Why ReactGuard?</h2>
-            <p className="section-lead">Traditional DeFi defense is broken. <b>ReactGuard fixes it.</b></p>
+            <h2 className="section-title"><Shield size={28} color="var(--blue)" /> Why Stasis?</h2>
+            <p className="section-lead">Traditional DeFi defense is broken. <b>Stasis fixes it.</b></p>
           </div>
           <div className="section-content text-block">
-            <p style={{ textAlign: 'center', marginBottom: '48px', maxWidth: '800px', margin: '0 auto 48px auto' }}>
-              Traditional defense uses off-chain bots that lose gas races. By the time they react, the pool is drained.<br/><br/>
-              <b>ReactGuard</b> registers directly with the Somnia Precompile. When a price drops, the Validator Network invokes <code>onEvent()</code> in the <b>same block</b>. The pool pauses atomically before the attacker can act.
-            </p>
+            <div style={{ textAlign: 'center', marginBottom: '48px', maxWidth: '800px', margin: '0 auto 48px auto' }}>
+              <p style={{ fontSize: '16px', color: 'var(--text-secondary)', lineHeight: '1.8' }}>
+                Every major DeFi hack follows the same pattern. An attacker manipulates an oracle price. An off-chain bot tries to respond. But by the time it detects the event and signs a transaction — <b>the pool is already drained.</b><br/><br/>
+                Traditional blockchains are <b>passive</b>. They wait to be asked. <b>Stasis</b> changes that.
+              </p>
+            </div>
 
             <div className="architecture-comparison" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginTop: '32px' }}>
               <div className="card" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', padding: '32px' }}>
@@ -165,7 +181,7 @@ export default function Landing() {
               <div className="card" style={{ background: 'var(--bg-primary)', border: '1px solid var(--blue)', padding: '32px', boxShadow: '0 0 40px rgba(59, 130, 246, 0.05)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
                   <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--blue)', boxShadow: '0 0 10px var(--blue)' }}></div>
-                  <h3 style={{ fontSize: '18px', fontWeight: '800', color: 'var(--text-primary)' }}>ReactGuard</h3>
+                  <h3 style={{ fontSize: '18px', fontWeight: '800', color: 'var(--text-primary)' }}>Stasis</h3>
                 </div>
                 <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '16px' }}>
                   <li style={{ display: 'flex', gap: '16px', color: 'var(--text-primary)' }}>
@@ -228,7 +244,7 @@ export default function Landing() {
       <section className="landing-section" id="features" style={{ background: 'var(--bg-secondary)' }}>
         <div className="section-container">
           <div className="section-header">
-            <h2 className="section-title">Features</h2>
+            <h2 className="section-title"><Cpu size={24} color="var(--blue)" /> Features</h2>
             <p className="section-lead"><b>Built Different, By Design</b></p>
           </div>
           <div className="features-grid">
@@ -291,17 +307,47 @@ export default function Landing() {
                       <b>MockOracle</b>
                     </div>
                   </td>
-                  <td className="addr-cell">0xE5b2AD1558949447eD7b135ceB40baA894f417A1</td>
+                  <td className="addr-cell">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <a 
+                        href={`https://shannon-explorer.somnia.network/address/${ORACLE_ADDR}`} 
+                        target="_blank" 
+                        rel="noreferrer"
+                        className="nav-link"
+                        style={{ fontFamily: 'var(--mono)', fontSize: '13px', color: 'var(--text-primary)', fontWeight: '700', textDecoration: 'none' }}
+                      >
+                        {ORACLE_ADDR}
+                      </a>
+                      <button className="copy-btn" onClick={() => copyToClipboard(ORACLE_ADDR)} title="Copy Address">
+                        <Copy size={12} strokeWidth={1.5} />
+                      </button>
+                    </div>
+                  </td>
                   <td>Somnia Devnet</td>
                 </tr>
                 <tr>
                   <td>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                       <Shield size={16} color="var(--blue)" />
-                      <b>ReactGuard</b>
+                      <b>Stasis</b>
                     </div>
                   </td>
-                  <td className="addr-cell" style={{ color: 'var(--blue)' }}>0x654Af00Ef47437911d52D12A88085E8f65b0F940</td>
+                  <td className="addr-cell">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <a 
+                        href={`https://shannon-explorer.somnia.network/address/${GUARD_ADDR}`} 
+                        target="_blank" 
+                        rel="noreferrer"
+                        className="nav-link"
+                        style={{ fontFamily: 'var(--mono)', fontSize: '13px', color: 'var(--blue)', fontWeight: '700', textDecoration: 'none' }}
+                      >
+                        {GUARD_ADDR}
+                      </a>
+                      <button className="copy-btn" onClick={() => copyToClipboard(GUARD_ADDR)} title="Copy Address">
+                        <Copy size={12} strokeWidth={1.5} />
+                      </button>
+                    </div>
+                  </td>
                   <td>Somnia Devnet</td>
                 </tr>
                 <tr>
@@ -311,7 +357,22 @@ export default function Landing() {
                       <b>MockLendingPool</b>
                     </div>
                   </td>
-                  <td className="addr-cell">0xA8DC52496d077E823675F114f2D8469C7a6E97d8</td>
+                  <td className="addr-cell">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <a 
+                        href={`https://shannon-explorer.somnia.network/address/${POOL_ADDR}`} 
+                        target="_blank" 
+                        rel="noreferrer"
+                        className="nav-link"
+                        style={{ fontFamily: 'var(--mono)', fontSize: '13px', color: 'var(--text-primary)', fontWeight: '700', textDecoration: 'none' }}
+                      >
+                        {POOL_ADDR}
+                      </a>
+                      <button className="copy-btn" onClick={() => copyToClipboard(POOL_ADDR)} title="Copy Address">
+                        <Copy size={12} strokeWidth={1.5} />
+                      </button>
+                    </div>
+                  </td>
                   <td>Somnia Devnet</td>
                 </tr>
                 <tr>
@@ -321,8 +382,23 @@ export default function Landing() {
                       <b>Subscription ID</b>
                     </div>
                   </td>
-                  <td className="addr-cell">6879957816108517943170610238244214937208003125</td>
-                  <td>Somnia Precompile</td>
+                  <td className="addr-cell" style={{ fontFamily: 'var(--mono)', fontSize: '12px', opacity: 0.8 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <a 
+                        href={`https://shannon-explorer.somnia.network/address/${GUARD_ADDR}?tab=internal_txs`} 
+                        target="_blank" 
+                        rel="noreferrer"
+                        className="nav-link"
+                        style={{ fontFamily: 'var(--mono)', fontSize: '12px', color: 'var(--text-primary)', fontWeight: '700', textDecoration: 'none' }}
+                      >
+                        {SUB_ID}
+                      </a>
+                      <button className="copy-btn" onClick={() => copyToClipboard(SUB_ID)} title="Copy ID">
+                        <Copy size={12} strokeWidth={1.5} />
+                      </button>
+                    </div>
+                  </td>
+                  <td>Reactivity Index</td>
                 </tr>
               </tbody>
             </table>
@@ -346,34 +422,35 @@ export default function Landing() {
         <div className="section-container text-center">
           <div className="section-header">
             <h2 className="section-title">Sponsors & Partners</h2>
-            <p className="section-lead">ReactGuard is built for the Somnia Reactivity Mini Hackathon</p>
+            <p className="section-lead">Stasis is built for the Somnia Reactivity Mini Hackathon</p>
           </div>
           
           <div className="grid-2" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '32px', marginTop: '48px' }}>
             <div className="sponsor-tier">
               <h4 style={{ marginBottom: '16px', fontSize: '12px', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-muted)' }}>Hackathon Organizer</h4>
               <div className="card" style={{ padding: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-primary)', border: '1px solid var(--border)', minHeight: '140px' }}>
-                <img src={DoraLogo} alt="DoraHacks" style={{ height: '240px', width: 'auto', borderRadius: 'var(--radius)' }} />
+                <img src={DoraLogo} alt="DoraHacks" style={{ height: '240px', width: 'auto' }} />
               </div>
             </div>
             
             <div className="sponsor-tier">
               <h4 style={{ marginBottom: '16px', fontSize: '12px', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-muted)' }}>Testnet Token Provider</h4>
               <div className="card" style={{ padding: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-primary)', border: '1px solid var(--border)', minHeight: '140px' }}>
-                <img src={SomniaLogo} alt="Somnia" style={{ height: '240px', width: 'auto', borderRadius: 'var(--radius)' }} />
+                <img src={SomniaLogo} alt="Somnia" style={{ height: '240px', width: 'auto' }} />
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <footer className="footer" style={{ borderTop: '1px solid var(--border)', background: 'var(--bg-primary)', padding: '80px 24px' }}>
+      {/* ── Footer ── */}
+      <footer className="footer" style={{ padding: '80px 24px', borderTop: '1px solid var(--border)', background: 'var(--bg-primary)' }}>
         <div className="section-container" style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr 1fr', gap: '48px', textAlign: 'left' }}>
           {/* Column 1: Brand */}
           <Link to="/" className="footer-brand" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} style={{ cursor: 'pointer', textDecoration: 'none' }}>
             <div className="logo" style={{ marginBottom: '20px' }}>
-              <div className="logo-icon"><Shield size={20} color="#fff" /></div>
-              <div className="logo-text"><h1 style={{ color: '#fff', fontSize: '20px', fontWeight: '800' }}>ReactGuard</h1></div>
+              <div className="logo-icon"><Shield size={20} strokeWidth={2} color="#fff" /></div>
+              <div className="logo-text"><h1 style={{ color: '#fff', fontSize: '20px', fontWeight: '800' }}>Stasis</h1></div>
             </div>
             <p style={{ color: 'var(--text-secondary)', fontSize: '14px', lineHeight: '1.6', maxWidth: '240px' }}>
               The first DeFi guardian that defends protocols entirely on-chain, with sub-second finality.
@@ -396,7 +473,7 @@ export default function Landing() {
           <div className="footer-links">
             <h4 style={{ color: 'var(--text-primary)', fontSize: '13px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '24px' }}>Connect</h4>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <li><a href="https://github.com/Ankit-raj-11/ReactGuard" target="_blank" rel="noreferrer" className="nav-link" style={{ fontSize: '14px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <li><a href="https://github.com/Ankit-raj-11/Stasis" target="_blank" rel="noreferrer" className="nav-link" style={{ fontSize: '14px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <img src={GithubIcon} alt="GitHub" style={{ width: '16px', height: '16px', filter: 'brightness(0) invert(1)' }} /> Repository
               </a></li>
               <li><a href="https://x.com/nikhil_py" target="_blank" rel="noreferrer" className="nav-link" style={{ fontSize: '14px', display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -410,7 +487,7 @@ export default function Landing() {
         </div>
 
         <div className="section-container" style={{ marginTop: '60px', paddingTop: '30px', borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'var(--text-muted)', fontSize: '12px' }}>
-          <p>© 2025 ReactGuard. All rights reserved.</p>
+          <p>© 2026 Stasis. All rights reserved.</p>
           <p>Built with <b>Somnia Native Reactivity</b></p>
         </div>
       </footer>

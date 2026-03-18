@@ -40,11 +40,13 @@ When the defense triggers, point to the **Defense Latency** card. It usually sho
 Use the **Copy Button (📋)** next to the attack transaction hash. Live in the video, paste it into the search bar of the **Shannon Explorer**. This shows the judges the system is transparent and verifiable.
 
 ### 4. Step-by-Step On-Chain Verification
-Show the judges the "Chain of Command":
-1.  **Transaction #1 (The Attack)**: Search for the hash you copied. Show that it called the **Oracle**'s `setPrice`.
-2.  **Internal Call #1 (The Guardian)**: Inside that same transaction, go to **Internal Transactions**. Point to the call from `0x000...0100` to your **ReactGuard** contract. This is Somnia Reactivity in action.
-3.  **Internal Call #2 (The Defense)**: Show the next internal call from **ReactGuard** to the **Lending Pool**'s `pause` function.
-4.  **The Result**: Show the Pool's state is now `Paused`. Explain that this all happened seamlessly because of the on-chain subscription.
+# Stasis Demo Script
+
+1. **Introduction**: Introduce Stasis as the first on-chain DeFi guardian.
+2. **Setup**: Show the active contracts and the 20% drop threshold.
+3. **Attack**: Trigger a 25% price drop on the MockOracle.
+4. **Defense**: Show that Stasis automatically paused the pool in the same block.
+Explain that this all happened seamlessly because of the on-chain subscription.
 
 ---
 

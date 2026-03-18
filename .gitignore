@@ -6,5 +6,10 @@ frontend/node_modules/
 frontend/dist/
 frontend/.env
 backend/node_modules/
+backend/.env
 gemini.md
 master.md
+DEMO_SCRIPT.md
+DEPLOYMENT.md
+Landing_Content.md
+VERIFICATION_GUIDE.md
