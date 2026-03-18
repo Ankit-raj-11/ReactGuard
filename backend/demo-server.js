@@ -3,14 +3,15 @@
  *
  * Provides 1-click attack/reset for the dashboard without MetaMask popups.
  *
- * ATTACK FLOW (real Somnia Reactivity):
+ * ATTACK FLOW (real Somnia Reactivity + fallback):
  *   1. Server sends ONLY oracle.setPrice(-20%) — one transaction
  *   2. Somnia validators detect PriceDrop event on-chain
  *   3. Validators automatically invoke ReactGuard._onEvent() in same block
  *   4. _onEvent() checks risk score → calls pool.pause() if threshold met
- *   5. Server polls until pool.paused() === true and reports latency
+ *   5. FALLBACK: If validators don't respond in 5s, manually trigger ReactGuard
+ *   6. Server polls until pool.paused() === true and reports latency
  *
- * No simulateEvent(). No fake calls. Pure Somnia Reactivity.
+ * This ensures the demo always works even if Somnia Reactivity has issues.
  */
 import 'dotenv/config'
 import express from 'express'
@@ -47,6 +48,7 @@ const ORACLE_ABI = [
 const GUARD_ABI = [
   'function getStatus() view returns (bool poolPaused, uint256 interventions, uint256 lastDefended, uint256 lastDrop)',
   'function subscriptionId() view returns (uint256)',
+  'function manualTrigger(int256 oldPrice, int256 newPrice, uint256 dropBps)',
 ]
 const POOL_ABI = [
   'function paused() view returns (bool)',
@@ -80,13 +82,16 @@ app.get('/demo/status', async (_req, res) => {
 // ── POST /demo/attack ─────────────────────────────────────────────────────
 // Sends ONE tx: oracle.setPrice(-20%)
 // Somnia validators auto-invoke ReactGuard._onEvent() — we just poll for it
+// FALLBACK: If validators don't respond in 5s, manually trigger ReactGuard
 app.post('/demo/attack', async (_req, res) => {
   try {
     const oracle = new ethers.Contract(ORACLE_ADDR, ORACLE_ABI, wallet)
+    const guard  = new ethers.Contract(GUARD_ADDR,  GUARD_ABI,  wallet)
     const pool   = new ethers.Contract(POOL_ADDR,   POOL_ABI,   provider)
 
     const current  = await oracle.getPrice()
     const newPrice = (current * 80n) / 100n
+    const dropBps  = 2000 // 20% drop
 
     console.log('\n⚔️  ATTACK: Dropping oracle price −20%…')
     const t0 = Date.now()
@@ -96,16 +101,34 @@ app.post('/demo/attack', async (_req, res) => {
 
     // Poll for Somnia validators to auto-invoke _onEvent() → pool.pause()
     let defended = false
-    for (let i = 0; i < 15; i++) {
-      await new Promise(r => setTimeout(r, 1200))
-      if (await pool.paused()) { defended = true; break }
+    let usedFallback = false
+    
+    // First 5 seconds: wait for Somnia Reactivity
+    for (let i = 0; i < 5; i++) {
+      await new Promise(r => setTimeout(r, 1000))
+      if (await pool.paused()) { 
+        defended = true
+        break
+      }
     }
+    
+    // If not defended by Somnia, use fallback
+    if (!defended) {
+      console.log('   ⚠️  Somnia validators not responding — activating fallback…')
+      const fallbackTx = await guard.manualTrigger(current, newPrice, dropBps)
+      await fallbackTx.wait()
+      defended = await pool.paused()
+      usedFallback = true
+      console.log(`   ⚡ Fallback triggered — pool ${defended ? 'paused' : 'still active'}`)
+    }
+    
     const latency = Date.now() - t0
 
     if (defended) {
-      console.log(`   ⚡ Pool paused by Somnia validators in ${latency}ms!`)
+      const method = usedFallback ? 'fallback manual trigger' : 'Somnia validators'
+      console.log(`   ⚡ Pool paused by ${method} in ${latency}ms!`)
     } else {
-      console.log('   ⚠️  Pool not paused after 18s — check subscription is active')
+      console.log('   ❌ Pool not paused even after fallback — check contract setup')
     }
 
     res.json({
@@ -114,11 +137,14 @@ app.post('/demo/attack', async (_req, res) => {
       block:    receipt.blockNumber,
       latency,
       defended,
+      usedFallback,
       oldPrice: current.toString(),
       newPrice: newPrice.toString(),
       note:     defended
-        ? 'Pool paused autonomously by Somnia validators calling _onEvent(). Zero defense txs from us.'
-        : 'Subscription may not be active — run setup-subscription.js first.',
+        ? usedFallback 
+          ? 'Pool paused by fallback manual trigger (Somnia Reactivity may have issues).'
+          : 'Pool paused autonomously by Somnia validators calling _onEvent(). Zero defense txs from us.'
+        : 'Neither Somnia Reactivity nor fallback worked — check contract setup.',
     })
   } catch (err) {
     console.error('Attack error:', err.reason ?? err.message)

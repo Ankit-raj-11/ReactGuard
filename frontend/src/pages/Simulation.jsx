@@ -34,6 +34,7 @@ const RPC_URL = import.meta.env.VITE_RPC_URL || 'https://dream-rpc.somnia.networ
 const ORACLE_ADDR = import.meta.env.VITE_ORACLE_ADDRESS || ''
 const GUARD_ADDR  = import.meta.env.VITE_REACTGUARD_ADDRESS || ''
 const POOL_ADDR   = import.meta.env.VITE_POOL_ADDRESS || ''
+const API_BASE    = import.meta.env.VITE_BACKEND_URL || ''
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 function fmtPrice(bigN) {
@@ -251,7 +252,7 @@ export default function Simulation() {
     setTxStep('Sending attack transaction… (auto-signing)')
     addEvent('attack', 'ATTACK: Sending oracle price manipulation on-chain…')
     try {
-      const res  = await fetch('/demo/attack', { method: 'POST' })
+      const res  = await fetch(`${API_BASE}/demo/attack`, { method: 'POST' })
       const data = await res.json()
       if (!data.ok) throw new Error(data.error)
 
@@ -260,8 +261,12 @@ export default function Simulation() {
 
       if (data.defended) {
         setLatencyMs(data.latency)
-        addEvent('defend', `SOMNIA REACTIVITY: Pool paused in ${data.latency}ms — validators invoked _onEvent()!`)
-        addEvent('defend', 'POOL PAUSED — attacker borrows REVERT. Zero bots used.')
+        const method = data.usedFallback ? 'fallback system' : 'Somnia validators'
+        addEvent('defend', `DEFENSE ACTIVATED: Pool paused by ${method} in ${data.latency}ms!`)
+        if (data.usedFallback) {
+          addEvent('warning', 'Somnia Reactivity did not respond — fallback system activated')
+        }
+        addEvent('defend', 'POOL PAUSED — attacker borrows REVERT. System secured.')
       } else {
         addEvent('info', 'Subscription active. Waiting for validator network latency...')
       }
@@ -281,7 +286,7 @@ export default function Simulation() {
     setTxStep('Restoring oracle + unpausing pool…')
     addEvent('info', 'RESET: Restoring system to normal state…')
     try {
-      const res  = await fetch('/demo/reset', { method: 'POST' })
+      const res  = await fetch(`${API_BASE}/demo/reset`, { method: 'POST' })
       const data = await res.json()
       if (!data.ok) throw new Error(data.error)
 

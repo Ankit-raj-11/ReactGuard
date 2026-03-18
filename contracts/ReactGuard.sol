@@ -39,6 +39,7 @@ contract ReactGuard is SomniaEventHandler {
     event LendingPoolUpdated(address indexed oldPool, address indexed newPool);
     event ThresholdNotMet(uint256 dropBps, uint256 thresholdBps);
     event SubscriptionCreated(uint256 subscriptionId);
+    event EventReceived(address emitter, bytes32 eventTopic, uint256 dropBps);
 
     modifier onlyOwner() {
         require(msg.sender == owner, "ReactGuard: Only owner");
@@ -130,14 +131,41 @@ contract ReactGuard is SomniaEventHandler {
         (int256 oldPrice, int256 newPrice, uint256 dropBps) =
             abi.decode(data, (int256, int256, uint256));
 
+        // Emit debug event to track when this function is called
+        emit EventReceived(emitter, eventTopics[0], dropBps);
+
+        // Always update the last drop info for debugging
+        lastDropBps = dropBps;
+        lastDefendedAt = block.timestamp;
+
         // On-chain risk engine
         if (dropBps >= THRESHOLD_BPS) {
-            lastDropBps    = dropBps;
-            lastDefendedAt = block.timestamp;
             totalInterventions++;
-
             lendingPool.pause();
+            emit ProtocolPaused(dropBps, oldPrice, newPrice, block.timestamp);
+        } else {
+            emit ThresholdNotMet(dropBps, THRESHOLD_BPS);
+        }
+    }
 
+    /**
+     * @notice Manual trigger for testing - simulates what Somnia validators should do
+     * @dev Only for debugging - remove in production
+     */
+    function manualTrigger(int256 oldPrice, int256 newPrice, uint256 dropBps) external onlyOwner {
+        require(address(lendingPool) != address(0), "ReactGuard: Pool not set");
+        
+        // Emit debug event
+        emit EventReceived(oracle, PRICE_DROP_TOPIC, dropBps);
+        
+        // Always update the last drop info for debugging
+        lastDropBps = dropBps;
+        lastDefendedAt = block.timestamp;
+
+        // On-chain risk engine
+        if (dropBps >= THRESHOLD_BPS) {
+            totalInterventions++;
+            lendingPool.pause();
             emit ProtocolPaused(dropBps, oldPrice, newPrice, block.timestamp);
         } else {
             emit ThresholdNotMet(dropBps, THRESHOLD_BPS);
