@@ -217,6 +217,24 @@ Open [http://localhost:5173](http://localhost:5173) and click **🔴 Simulate At
 
 ---
 
+## 🌐 Production Deployment
+
+### Quick Deploy (All Components)
+```bash
+# Deploy smart contracts to Somnia
+./deploy-all.sh    # Linux/Mac
+deploy-all.bat     # Windows
+```
+
+### Manual Deployment
+1. **Smart Contracts** → Deploy to Somnia Testnet
+2. **Backend** → Deploy to [Render](https://render.com) or [Railway](https://railway.app)
+3. **Frontend** → Deploy to [Vercel](https://vercel.com) or [Netlify](https://netlify.com)
+
+See [**DEPLOYMENT_GUIDE.md**](./DEPLOYMENT_GUIDE.md) for detailed production deployment instructions.
+
+---
+
 ## 🧪 Testing
 
 ```bash

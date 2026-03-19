@@ -13,11 +13,13 @@
  *
  * This ensures the demo always works even if Somnia Reactivity has issues.
  */
-import 'dotenv/config'
+import dotenv from 'dotenv'
 import express from 'express'
 import { ethers } from 'ethers'
 
-import cors from 'cors'
+// Load environment variables
+dotenv.config()
+
 const app = express()
 app.use(cors({
   origin: [

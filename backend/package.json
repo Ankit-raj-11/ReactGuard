@@ -3,9 +3,11 @@
   "version": "1.0.0",
   "description": "Stasis Demo API — auto-signs attack/reset transactions",
   "type": "module",
+  "main": "demo-server.js",
   "scripts": {
     "start": "node demo-server.js",
-    "demo": "node --env-file=../.env demo-server.js"
+    "dev": "node demo-server.js",
+    "demo": "node demo-server.js"
   },
   "dependencies": {
     "dotenv": "^16.4.5",
